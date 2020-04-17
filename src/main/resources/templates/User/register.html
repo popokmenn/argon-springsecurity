@@ -30,7 +30,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                                     </div>
-                                    <input class="form-control" placeholder="Full Name" id="register-fullname" type="text">
+                                    <input class="form-control" placeholder="Full Name" id="register-fullname"
+                                        type="text">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -100,9 +101,53 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="button" id="btnRegister" class="btn btn-primary mt-4">Create account</button>
+                                <button type="button" id="btnRegister" class="btn btn-primary mt-4" disabled>Create
+                                    account</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="modal fade" id="modal-success" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+                aria-hidden="true">
+                <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                    <div class="modal-content bg-gradient-info">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="py-3 text-center">
+                                <i class="ni ni-satisfied ni-3x"></i>
+                                <h6 class="heading mt-4">Voila!</h6>
+                                <p>You're now a member of <strong>Laskar Kuda Petir</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="modal fade" id="modal-error" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+                aria-hidden="true">
+                <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                    <div class="modal-content bg-gradient-danger">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="py-3 text-center">
+                                <i class="ni ni-ambulance ni-3x"></i>
+                                <h6 class="heading mt-4">Uh.. Oh!</h6>
+                                <h4 style="color: white;"><strong>Internal Server</strong> Error</h4>
+                                <p style="font-size: 70%;" id="error-message"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

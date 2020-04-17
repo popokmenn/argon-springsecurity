@@ -49,8 +49,31 @@ function autoAddRole() {
     });
 }
 
+function checkIsErrorTrue() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const isLoginError = urlParams.get('error')
+    if (isLoginError) {
+        console.log(isLoginError);
+        $('#modal-error').modal('show');
+    } else {
+        console.log("asdsadas");
+    }
+}
+
+function modalUtil() {
+    $('#modal-error').modal('hide');
+    window.history.pushState({}, document.title, "/" + "login");
+}
+
+$('#modal-error').on('hidden.bs.modal', function () {
+    $('#modal-error').modal('hide');
+    window.history.pushState({}, document.title, "/" + "login");
+})
+
 $(document).ready(function () {
     //autoAddRole();
+    checkIsErrorTrue();
     inputUsername.addEventListener('input', inputHandler);
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);

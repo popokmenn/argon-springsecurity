@@ -14,11 +14,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Data;
 
 @Data
 @Entity(name = User.TABLE_NAME)
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "user_username" }) })
 public class User extends BaseEntity {
 
     public static final String TABLE_NAME = "T_USER";

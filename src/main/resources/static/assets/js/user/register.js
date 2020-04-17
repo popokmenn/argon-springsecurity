@@ -1,3 +1,15 @@
+const inputUsername = document.getElementById('register-username');
+const inputPassword = document.getElementById('register-password');
+
+const inputHandler = function (e) {
+
+    if ($('#register-username').val().length > 4 && $('#register-password').val().length > 4) {
+        document.getElementById("btnRegister").disabled = false;
+    } else {
+        document.getElementById("btnRegister").disabled = true;
+    }
+}
+
 var populateCombo = {
     getAllRole: function (idProvinsi, idKota) {
         $.ajax({
@@ -6,7 +18,7 @@ var populateCombo = {
             contentType: 'application/json',
             success: function (res, status, xhr) {
                 if (res.length > 0) {
-                    console.log(res);
+                    //console.log(res);
                     var dynamicSelect = document.getElementById("selectRole");
                     $('#selectRole').find('option').remove();
                     var firstOption = document.createElement("option");
@@ -64,7 +76,9 @@ $('#btnRegister').click(function () {
             console.log(res);
         },
         error: function (xhr) {
-            console.log(JSON.parse(xhr.responseText));
+            console.log(xhr.responseJSON);
+            $('#modal-error').modal('show');
+            document.getElementById("error-message").textContent = xhr.responseJSON.message
         }
     });
 })
@@ -79,7 +93,7 @@ function autoAddRole() {
             console.log("Role added succesfully")
         },
         error: function (xhr, status, error) {
-            console.log(JSON.parse(xhr.responseText));
+            console.log(JSON.parse(xhr.responseJSON));
         }
     });
 }
@@ -148,4 +162,8 @@ $(document).ready(function () {
         document.getElementById("strength-progress").innerHTML = strength;
         document.getElementById("password-progressbar").setAttribute("style", "width:" + strength);
     });
+    inputUsername.addEventListener('input', inputHandler);
+    inputUsername.addEventListener('propertychange', inputHandler);
+    inputPassword.addEventListener('input', inputHandler);
+    inputPassword.addEventListener('propertychange', inputHandler);
 });
