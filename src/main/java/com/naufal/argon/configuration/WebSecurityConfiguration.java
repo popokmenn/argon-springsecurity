@@ -36,9 +36,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-            .antMatchers("/dashboard/**").authenticated()
-            .antMatchers("/login").permitAll()
-            .antMatchers("/assets/**").permitAll()
             .anyRequest().authenticated()
         .and().formLogin()
             .loginPage("/login")
@@ -63,7 +60,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html/**",
             "/webjars/**",
             "/user/**",
-            "/register/**"
+            "/register/**",
+            "/login",
+            "/assets/**"
         );
     }
 

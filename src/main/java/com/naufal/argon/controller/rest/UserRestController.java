@@ -1,5 +1,6 @@
 package com.naufal.argon.controller.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,6 @@ import com.naufal.argon.model.User;
 import com.naufal.argon.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,6 +67,21 @@ public class UserRestController {
             roleList.get(i).setUserRole(null);
         }
         return roleList;
+    }
+
+    @GetMapping(value = "/auto-add-role")
+    private void addRoleIfNotExist() {
+        String[] roleArr = { "Super Admin", "Admin", "User", "Karyawan Toko" };
+        
+        List<Role> roleList = new ArrayList<>();
+        roleRepository.deleteAll();
+        for (int i = 0; i < roleArr.length; i++) {
+            Role role = new Role();
+            role.setId("ROLE_" + roleArr[i].toUpperCase().replaceAll("\\s", ""));
+            role.setName(roleArr[i]);
+            roleList.add(role);
+        }
+        roleRepository.saveAll(roleList);
     }
 
 }

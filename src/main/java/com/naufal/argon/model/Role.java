@@ -28,9 +28,6 @@ public class Role {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(generator = "sequence_role", strategy = GenerationType.AUTO)
-    @GenericGenerator(name = "sequence_role", parameters = {
-            @Parameter(name = "prefix", value = "ROLE_") }, strategy = "com.naufal.argon.configuration.PrefixGenerator")
     private String id;
 
     @Column(name = "name")
@@ -41,5 +38,8 @@ public class Role {
 
     // @Column(name = "description")
     // private String description;
+    // @GeneratedValue(generator = "sequence_role", strategy = GenerationType.AUTO)
+    // @GenericGenerator(name = "sequence_role", parameters = {
+    //     @Parameter(name = "prefix", value = "ROLE_") }, strategy = "com.naufal.argon.configuration.PrefixGenerator")
 
 }

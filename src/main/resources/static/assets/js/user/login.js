@@ -35,7 +35,22 @@ $('#btn-loginn').click(function () {
     });
 })
 
+function autoAddRole() {
+    $.ajax({
+        url: '/user/auto-add-role',
+        method: 'get',
+        contentType: 'application/json',
+        success: function (res, status, xhr) {
+            console.log("Role added succesfully")
+        },
+        error: function (xhr, status, error) {
+            console.log(JSON.parse(xhr.responseText));
+        }
+    });
+}
+
 $(document).ready(function () {
+    //autoAddRole();
     inputUsername.addEventListener('input', inputHandler);
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);

@@ -5,20 +5,24 @@ var populateCombo = {
             method: 'get',
             contentType: 'application/json',
             success: function (res, status, xhr) {
-                console.log(res);
-                var dynamicSelect = document.getElementById("selectRole");
-                $('#selectRole').find('option').remove();
-                var firstOption = document.createElement("option");
-                firstOption.setAttribute("id", 0);
-                firstOption.text = "Role";
-                //dynamicSelect.add(firstOption);
+                if (res.length > 0) {
+                    console.log(res);
+                    var dynamicSelect = document.getElementById("selectRole");
+                    $('#selectRole').find('option').remove();
+                    var firstOption = document.createElement("option");
+                    firstOption.setAttribute("id", 0);
+                    firstOption.text = "Role";
+                    //dynamicSelect.add(firstOption);
 
-                res.forEach(element => {
-                    var newOption = document.createElement("option");
-                    newOption.setAttribute("id", element.id);
-                    newOption.text = element.name;
-                    dynamicSelect.add(newOption);
-                })
+                    res.forEach(element => {
+                        var newOption = document.createElement("option");
+                        newOption.setAttribute("id", element.id);
+                        newOption.text = element.name;
+                        dynamicSelect.add(newOption);
+                    })
+                } else {
+                    autoAddRole();
+                }
             },
             error: function (xhr) {
                 console.log(JSON.parse(xhr.responseText));
@@ -64,6 +68,21 @@ $('#btnRegister').click(function () {
         }
     });
 })
+
+function autoAddRole() {
+    $.ajax({
+        url: '/user/auto-add-role',
+        method: 'get',
+        contentType: 'application/json',
+        success: function (res, status, xhr) {
+            location.reload();
+            console.log("Role added succesfully")
+        },
+        error: function (xhr, status, error) {
+            console.log(JSON.parse(xhr.responseText));
+        }
+    });
+}
 
 $(document).ready(function () {
     populateCombo.getAllRole();
