@@ -74,6 +74,7 @@ $('#btnRegister').click(function () {
         data: JSON.stringify(user),
         success: function (res, status, xhr) {
             console.log(res);
+            $('#modal-success').modal('show');
         },
         error: function (xhr) {
             console.log(xhr.responseJSON);
@@ -97,6 +98,14 @@ function autoAddRole() {
         }
     });
 }
+
+$('#modal-success').on('hidden.bs.modal', function () {
+    $('#modal-success').modal('hide');
+
+    // AES encrypt
+    var encrypted = CryptoJS.AES.encrypt(document.getElementById("register-password").textContent, "Secret Passphrase");
+    window.open("/login/?password=" + encrypted + "&username=" + document.getElementById("register-username").textContent)
+})
 
 $(document).ready(function () {
     populateCombo.getAllRole();
@@ -166,4 +175,5 @@ $(document).ready(function () {
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);
     inputPassword.addEventListener('propertychange', inputHandler);
+
 });

@@ -61,7 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/user/**",
             "/register/**",
-            "/login",
+            "/login/**",
             "/assets/**"
         );
     }

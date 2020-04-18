@@ -18,7 +18,7 @@ $('#btn-loginn').click(function () {
     var password = document.getElementById("password").value;
 
     // MD5 encrypt
-    var encrptedText = CryptoJS.MD5(password)
+    //var encrptedText = CryptoJS.MD5(password)
 
     $.ajax({
         url: '/user/login?password=' + encrptedText.toString().toUpperCase() + '&username=' + username,
@@ -71,9 +71,19 @@ $('#modal-error').on('hidden.bs.modal', function () {
     window.history.pushState({}, document.title, "/" + "login");
 })
 
+function loadToForm() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const passwordParam = urlParams.get('password')
+    var decrypted = CryptoJS.AES.decrypt(passwordParam, "Secret Passphrase");
+    console.log(CryptoJS.enc.Utf8.stringify(decrypted));
+    document.getElementById("password").value = CryptoJS.enc.Utf8.stringify(decrypted);
+}
+
 $(document).ready(function () {
     //autoAddRole();
     checkIsErrorTrue();
+    loadToForm();
     inputUsername.addEventListener('input', inputHandler);
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);
