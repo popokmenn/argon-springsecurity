@@ -50,15 +50,21 @@ public class UserServiceImpl implements UserService {
         Date currentDate = new Date();
         String createdBy = "Nopel Popokmen";
 
+        User user = new User();
         Biodata bio = new Biodata();
+
+        if (userDto.getId() > -1) {
+            user.setId(userDto.getId());
+            bio.setId(userRepository.findById(userDto.getId()).get().getId());
+        }
+        
         bio.setFullname(userDto.getFullname());
         bio.setAddress(userDto.getAddress());
         bio.setZipCode(userDto.getZipCode());
         bio.setProfilePhoto(userDto.getProfilePhoto());
         bio.setCreatedBy(createdBy);
         bio.setCreatedOn(currentDate);
-
-        User user = new User();
+        
         user.setCreatedOn(currentDate);
         user.setCreatedBy(createdBy);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -77,6 +83,7 @@ public class UserServiceImpl implements UserService {
             u.setId(ur);
             userRoles.add(u);
         }
+        userRoleRepository.deleteAllByIdUserId(userDto.getId());
         List<UserRole> usersRole = userRoleRepository.saveAll(userRoles);
         userSave.setUserRole(usersRole);
         return userSave;

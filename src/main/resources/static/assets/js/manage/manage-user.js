@@ -1,7 +1,8 @@
-var roleList = []
+var roleList = [];
 var idUserForDelete;
 const inputUsername = document.getElementById('username');
 const inputPassword = document.getElementById('password');
+var pwInput = document.getElementById('pwDiv')
 
 //suatu fungsi yang dijalankan ketika inputan username dan password diketik
 const inputHandler = function (e) {
@@ -14,6 +15,9 @@ const inputHandler = function (e) {
 
 //dipanggil di attribut element button html
 function addNewUser() {
+    populateCombo.getAllRole({ id: 0, roles: "" })
+    pwInput.style.display = 'inline'
+    $("#user-form").closest('form').find("input[type=text], input[type=email], input[type=password]").val("");
     $('#modal-form').modal('show');
 }
 
@@ -25,6 +29,28 @@ function deleteUser(idUser) {
 function reloadTabel() {
     $("#table-user-body tr").remove();
     populateTable.getAllUsers();
+}
+
+function loadToForm(idUser) {
+    pwInput.style.display = 'none' //untuk meng hide inputan password
+    $.ajax({
+        url: 'user/get/' + idUser,
+        method: 'get',
+        contentType: 'application/json',
+        success: function (res, status, xhr) {
+            $('#modal-form').modal('show');
+            $("#idUser").val(res.id);
+            $("#username:text").val(res.username);
+            $("#fullname:text").val(res.fullname);
+            $("#email").val(res.email);
+            populateCombo.getAllRole(res);
+            document.getElementById("btn-signup").disabled = false;
+        },
+        error: function (xhr) {
+            console.log(JSON.parse(xhr.responseText));
+        }
+    });
+
 }
 
 function deleteUserOnBtnModal() {
@@ -87,6 +113,7 @@ function generateRow(userObj) {
     btnSign.setAttribute("data-placement", "top");
     btnSign.setAttribute("title", "Sign and modify user");
     btnSign.setAttribute("type", "button");
+    btnSign.setAttribute("onclick", "loadToForm(" + userObj.id + ")")
     btnSign.className = "btn btn-success btn-sm";
     var spanIconSign = document.createElement('span')
     spanIconSign.className = "btn-inner--icon";
@@ -138,7 +165,7 @@ var populateTable = {
 
 // get role buat dropdown
 var populateCombo = {
-    getAllRole: function (idProvinsi, idKota) {
+    getAllRole: function (obj) {
         $.ajax({
             url: '/user/role',
             method: 'get',
@@ -154,6 +181,15 @@ var populateCombo = {
                     dynamicSelect.add(newOption);
                 })
 
+                if (obj.roles.length > 0) {
+                    for (let index = 0; index < obj.roles.length; index++) {
+                        var opt = document.getElementById(obj.roles[index].id);
+                        opt.setAttribute('selected', 'selected')
+                        roleList = obj.roles;
+                    }
+                }
+                $("#selectRole").trigger("change");
+
             },
             error: function (xhr) {
                 console.log(JSON.parse(xhr.responseText));
@@ -162,24 +198,10 @@ var populateCombo = {
     }
 }
 
-// funsi yang dijalankan ketika dropdown select2 yang id nya SelectRole di pilih salah satu option nya
-$("#selectRole").on("select2:select select2:unselect", function (e) {
-    var items = $(this).val();
-    var lastSelectedItem = e.params.data.id;
-
-    roleList = []
-    for (let index = 0; index < items.length; index++) {
-        var role = {
-            id: $("#selectRole").select2('data')[index].element.id,
-            name: lastSelectedItem
-        };
-        roleList.push(role)
-    }
-})
-
 // onClick button sign up
 $('#btn-signup').click(function () {
     var user = {
+        id: document.getElementById('idUser').value,
         email: document.getElementById('email').value,
         fullname: document.getElementById('fullname').value,
         password: document.getElementById('password').value,
@@ -207,14 +229,10 @@ $('#btn-signup').click(function () {
     });
 })
 
-
-
-
 // document ready, fungsi yang dijalankan ketika page sudah siap atau page sudah terload seluruhnya (ready)
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     reloadTabel()
-    populateCombo.getAllRole();
     inputUsername.addEventListener('input', inputHandler);
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);
@@ -228,9 +246,28 @@ $(document).ready(function () {
         allowClear: true
     });
 
+    // funsi yang dijalankan ketika dropdown select2 yang id nya SelectRole di pilih salah satu option nya
+    $("#selectRole").on("select2:select select2:unselect", function (e) {
+        //console.log(e)
+        var items = $(this).val();
+        var lastSelectedItem = e.params.data.id;
+
+        roleList = []
+        for (let index = 0; index < items.length; index++) {
+            var role = {
+                id: $("#selectRole").select2('data')[index].element.id,
+                name: lastSelectedItem
+            };
+            roleList.push(role)
+        }
+        console.log(roleList)
+    })
+
     // fundsi yang dijalankan ketika modal success di close, umumnya namanya onModalHide
-    $('#modal-success,#modal-notification').on('hidden.bs.modal', function () {
+    $('#modal-notification,#modal-form').on('hidden.bs.modal', function () {
         //karena gw pake tabel html biasa, maka untuk me refresh tabelnya pake 2 step. 1. delete semua row nya (destroy); 2. buat lagi tabel nya dari awal dengan data yg sudah ter update
         reloadTabel();
+        $("#idUser").val(-99);
     })
+
 });

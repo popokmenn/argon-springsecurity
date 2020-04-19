@@ -18,6 +18,7 @@ import com.naufal.argon.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,9 @@ public class UserRestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping(value = "/reg")
     private User saveUser(@RequestBody UserDto user) {
@@ -120,6 +124,30 @@ public class UserRestController {
             userDtoObj.setRoles(userRoles);
             userDtos.add(userDtoObj);
         }
+
+        return userDtos;
+    }
+
+    @GetMapping("get/{id}")
+    private UserDto getById(@PathVariable Long id) {
+        User user = userRepository.findById(id).get();
+     
+        List<BaseDto> roles = new ArrayList<>();
+        for(UserRole ur : user.getUserRole()) {
+            Role getRole = roleRepository.findById(ur.getId().getRoleId()).get();
+            BaseDto role = new BaseDto();
+            role.setId(getRole.getId());
+            role.setName(getRole.getName());
+            roles.add(role);
+        }
+
+        UserDto userDtos = new UserDto();
+        userDtos.setAddress(user.getBiodata().getAddress());
+        userDtos.setUsername(user.getUsername());
+        userDtos.setFullname(user.getBiodata().getFullname());
+        userDtos.setEmail(user.getEmail());
+        userDtos.setRoles(roles);
+        userDtos.setId(user.getId());
 
         return userDtos;
     }
