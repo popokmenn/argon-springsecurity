@@ -78,7 +78,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         // } else {
         // throw new IllegalStateException();
         // }
-        return "/dashboard";
+        return "/manage-user";
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request) {

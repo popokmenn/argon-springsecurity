@@ -50,19 +50,18 @@ $('#btnRegister').click(function () {
 
     var userRoleList = [];
     var userRole = {
-        roleId: "ROLE_ADMIN"
+        name: "Admin",
+        id: "ROLE_ADMIN"
     }
-    var userRoleId = {
-        id: userRole
-    }
-    userRoleList.push(userRoleId);
+    userRoleList.push(userRole);
 
     var user = {
+        id: -99,
         username: document.getElementById('register-username').value,
         email: document.getElementById('register-email').value,
         password: document.getElementById('register-password').value,
-        userRole: userRoleList,
-        biodata: biodata
+        fullname: document.getElementById('register-fullname').value,
+        roles: userRoleList
     }
     console.log(JSON.stringify(user));
 
@@ -100,8 +99,8 @@ function autoAddRole() {
 }
 
 $('#modal-success').on('hidden.bs.modal', function () {
-    $('#modal-success').modal('hide');
-
+    //$('#modal-success').modal('hide');
+    $("#form-regis").closest('form').find("input[type=text], input[type=email], input[type=password]").val("");
     // AES encrypt
     var encrypted = CryptoJS.AES.encrypt(document.getElementById("register-password").textContent, "Secret Passphrase");
     //window.open("/login/?password=" + encrypted + "&username=" + document.getElementById("register-username").textContent)
