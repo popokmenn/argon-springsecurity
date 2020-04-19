@@ -53,23 +53,29 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         Biodata bio = new Biodata();
 
-        if (userDto.getId() != null) {
-            if (userDto.getId() > -1) {
-                user.setId(userDto.getId());
-                bio.setId(userRepository.findById(userDto.getId()).get().getId());
-            }
+        if (userDto.getId() > -1) {
+            User userById = userRepository.findById(userDto.getId()).get();
+            user.setId(userDto.getId());
+            user.setModifiedBy(createdBy);
+            user.setModifiedOn(currentDate);
+            user.setPassword(userById.getPassword());
+            user.setCreatedBy(userById.getCreatedBy());
+            user.setCreatedOn(userById.getCreatedOn());
+            bio.setId(userById.getBiodata().getId());
+            bio.setCreatedBy(userById.getBiodata().getCreatedBy());
+            bio.setCreatedOn(userById.getBiodata().getCreatedOn());
+        } else {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            bio.setCreatedBy(createdBy);
+            bio.setCreatedOn(currentDate);
+            user.setCreatedOn(currentDate);
+            user.setCreatedBy(createdBy);
         }
 
         bio.setFullname(userDto.getFullname());
         bio.setAddress(userDto.getAddress());
         bio.setZipCode(userDto.getZipCode());
         bio.setProfilePhoto(userDto.getProfilePhoto());
-        bio.setCreatedBy(createdBy);
-        bio.setCreatedOn(currentDate);
-
-        user.setCreatedOn(currentDate);
-        user.setCreatedBy(createdBy);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setTokenExpired(false);
