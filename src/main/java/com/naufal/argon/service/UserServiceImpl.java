@@ -9,6 +9,9 @@ import javax.transaction.Transactional;
 import com.naufal.argon.Repository.BiodataRepository;
 import com.naufal.argon.Repository.UserRepository;
 import com.naufal.argon.Repository.UserRoleRepository;
+import com.naufal.argon.dto.BaseDto;
+import com.naufal.argon.dto.UserDto;
+import com.naufal.argon.model.Biodata;
 import com.naufal.argon.model.User;
 import com.naufal.argon.model.UserRole;
 import com.naufal.argon.model.UserRoleId;
@@ -43,29 +46,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUserAndRole(User user) {
+    public User saveUserAndRole(UserDto userDto) {
         Date currentDate = new Date();
         String createdBy = "Nopel Popokmen";
 
+        Biodata bio = new Biodata();
+        bio.setFullname(userDto.getFullname());
+        bio.setAddress(userDto.getAddress());
+        bio.setZipCode(userDto.getZipCode());
+        bio.setProfilePhoto(userDto.getProfilePhoto());
+        bio.setCreatedBy(createdBy);
+        bio.setCreatedOn(currentDate);
+
+        User user = new User();
         user.setCreatedOn(currentDate);
         user.setCreatedBy(createdBy);
-        user.getBiodata().setCreatedBy(createdBy);
-        user.getBiodata().setCreatedOn(currentDate);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setTokenExpired(false);
+        user.setBiodata(bio);
         User userSave = userRepository.save(user);
 
-        List<UserRole> userRole = new ArrayList<>(); 
-        for(UserRole ur : user.getUserRole()) {
-            UserRole uRole = new UserRole();
-            UserRoleId urId = new UserRoleId();
-            urId.setUserId(user.getId());
-            urId.setRoleId(ur.getId().getRoleId());
-            uRole.setId(urId);
-            userRole.add(uRole);
+        List<UserRole> userRoles = new ArrayList<>();
+        for (BaseDto d : userDto.getRoles()) {
+            UserRoleId ur = new UserRoleId();
+            UserRole u = new UserRole();
+            ur.setUserId(userSave.getId());
+            ur.setRoleId(d.getId());
+            u.setId(ur);
+            userRoles.add(u);
         }
-        userRoleRepository.saveAll(userRole);
-
+        List<UserRole> usersRole = userRoleRepository.saveAll(userRoles);
+        userSave.setUserRole(usersRole);
         return userSave;
+    }
+
+    @Override
+    public void deleteUser(Long idUser) {
+        userRoleRepository.deleteAllByIdUserId(idUser);
+        userRepository.deleteById(idUser);
     }
 
 }

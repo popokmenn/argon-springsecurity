@@ -21,4 +21,9 @@ public class DashboardController {
         return "User/register";
     }
 
+    @GetMapping(value = "/manage-user")
+    public String manageUser() {
+        return "Manage/User";
+    }
+
 }

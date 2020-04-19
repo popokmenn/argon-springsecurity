@@ -18,15 +18,21 @@
     <!-- Page plugins -->
     <!-- Argon CSS -->
     <link rel="stylesheet" href="assets/css/argon.css?v=1.2.0" type="text/css">
+    <!-- Select2 -->
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
 </head>
 
 <body>
 
     <!-- Sidenav Container -->
     <th:block layout:replace="~{Components/Sidenav}"></th:block>
-
-    <!-- Sidenav Container -->
-    <th:block layout:replace="~{Components/Navbar}"></th:block>
+    <div class="main-content" id="panel">
+        <!-- navbar Container -->
+        <th:block layout:replace="~{Components/Navbar}"></th:block>
+        <div layout:fragment="content-body" />
+    </div>
 
     <!-- Argon Scripts -->
     <!-- Core -->
@@ -40,6 +46,10 @@
     <script src="assets/vendor/chart.js/dist/Chart.extension.js"></script>
     <!-- Argon JS -->
     <script src="assets/js/argon.js?v=1.2.0"></script>
+    <!-- Select2 -->
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>
+    <script layout:fragment="bottom-script"></script>
 </body>
 
 </html>

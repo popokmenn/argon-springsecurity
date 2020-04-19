@@ -5,15 +5,22 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.databind.JsonSerializable.Base;
 import com.naufal.argon.Repository.RoleRepository;
 import com.naufal.argon.Repository.UserRepository;
+import com.naufal.argon.dto.BaseDto;
+import com.naufal.argon.dto.UserDto;
 import com.naufal.argon.model.Role;
 import com.naufal.argon.model.User;
+import com.naufal.argon.model.UserRole;
 import com.naufal.argon.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +41,7 @@ public class UserRestController {
     private UserService userService;
 
     @PostMapping(value = "/reg")
-    private User saveUser(@RequestBody User user) {
+    private User saveUser(@RequestBody UserDto user) {
         return userService.saveUserAndRole(user);
     }
 
@@ -72,7 +79,7 @@ public class UserRestController {
     @GetMapping(value = "/auto-add-role")
     private void addRoleIfNotExist() {
         String[] roleArr = { "Super Admin", "Admin", "User", "Karyawan Toko" };
-        
+
         List<Role> roleList = new ArrayList<>();
         roleRepository.deleteAll();
         for (int i = 0; i < roleArr.length; i++) {
@@ -82,6 +89,45 @@ public class UserRestController {
             roleList.add(role);
         }
         roleRepository.saveAll(roleList);
+    }
+
+    @GetMapping
+    private List<UserDto> getAllUser() {
+        List<User> users = userRepository.findAll();
+
+        List<UserDto> userDtos = new ArrayList<>();
+        for (User u : users) {
+            UserDto userDtoObj = new UserDto();
+            userDtoObj.setId(u.getId());
+            userDtoObj.setAddress(u.getBiodata().getAddress());
+            userDtoObj.setEmail(u.getEmail());
+            userDtoObj.setEnabled(u.getEnabled());
+            userDtoObj.setFullname(u.getBiodata().getFullname());
+            userDtoObj.setIdBiodata(u.getBiodata().getId());
+            userDtoObj.setPassword(u.getPassword());
+            userDtoObj.setProfilePhoto(u.getBiodata().getProfilePhoto());
+
+            List<BaseDto> userRoles = new ArrayList<>();
+            for (UserRole ur : u.getUserRole()) {
+                BaseDto roleObj = new BaseDto();
+                roleObj.setId(ur.getRole().getId());
+                roleObj.setName(ur.getRole().getName());
+                userRoles.add(roleObj);
+            }
+
+            userDtoObj.setUsername(u.getUsername());
+            userDtoObj.setZipCode(u.getBiodata().getZipCode());
+            userDtoObj.setRoles(userRoles);
+            userDtos.add(userDtoObj);
+        }
+
+        return userDtos;
+    }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

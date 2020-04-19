@@ -83,7 +83,7 @@ function loadToForm() {
 $(document).ready(function () {
     //autoAddRole();
     checkIsErrorTrue();
-    loadToForm();
+    //loadToForm();
     inputUsername.addEventListener('input', inputHandler);
     inputUsername.addEventListener('propertychange', inputHandler);
     inputPassword.addEventListener('input', inputHandler);

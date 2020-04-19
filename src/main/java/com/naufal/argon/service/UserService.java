@@ -1,11 +1,14 @@
 package com.naufal.argon.service;
 
+import com.naufal.argon.dto.UserDto;
 import com.naufal.argon.model.User;
 
 public interface UserService {
 
     public User saveUser(User user);
 
-    public User saveUserAndRole(User user);
+    public User saveUserAndRole(UserDto user);
+
+    public void deleteUser(Long idUser);
 
 }

@@ -19,19 +19,19 @@ var populateCombo = {
             success: function (res, status, xhr) {
                 if (res.length > 0) {
                     //console.log(res);
-                    var dynamicSelect = document.getElementById("selectRole");
-                    $('#selectRole').find('option').remove();
-                    var firstOption = document.createElement("option");
-                    firstOption.setAttribute("id", 0);
-                    firstOption.text = "Role";
-                    //dynamicSelect.add(firstOption);
+                    // var dynamicSelect = document.getElementById("selectRole");
+                    // $('#selectRole').find('option').remove();
+                    // var firstOption = document.createElement("option");
+                    // firstOption.setAttribute("id", 0);
+                    // firstOption.text = "Role";
+                    // //dynamicSelect.add(firstOption);
 
-                    res.forEach(element => {
-                        var newOption = document.createElement("option");
-                        newOption.setAttribute("id", element.id);
-                        newOption.text = element.name;
-                        dynamicSelect.add(newOption);
-                    })
+                    // res.forEach(element => {
+                    //     var newOption = document.createElement("option");
+                    //     newOption.setAttribute("id", element.id);
+                    //     newOption.text = element.name;
+                    //     dynamicSelect.add(newOption);
+                    // })
                 } else {
                     autoAddRole();
                 }
@@ -50,7 +50,7 @@ $('#btnRegister').click(function () {
 
     var userRoleList = [];
     var userRole = {
-        roleId: $("#selectRole option:selected").attr('id')
+        roleId: "ROLE_ADMIN"
     }
     var userRoleId = {
         id: userRole
@@ -104,7 +104,7 @@ $('#modal-success').on('hidden.bs.modal', function () {
 
     // AES encrypt
     var encrypted = CryptoJS.AES.encrypt(document.getElementById("register-password").textContent, "Secret Passphrase");
-    window.open("/login/?password=" + encrypted + "&username=" + document.getElementById("register-username").textContent)
+    //window.open("/login/?password=" + encrypted + "&username=" + document.getElementById("register-username").textContent)
 })
 
 $(document).ready(function () {
