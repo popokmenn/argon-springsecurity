@@ -114,11 +114,11 @@ function generateRow(userObj) {
     btnSign.setAttribute("title", "Sign and modify user");
     btnSign.setAttribute("type", "button");
     btnSign.setAttribute("onclick", "loadToForm(" + userObj.id + ")")
-    btnSign.className = "btn btn-success btn-sm";
+    btnSign.className = "btn btn-info btn-sm";
     var spanIconSign = document.createElement('span')
     spanIconSign.className = "btn-inner--icon";
     var iconSign = document.createElement('i')
-    iconSign.className = "ni ni-active-40"
+    iconSign.className = "ni ni-briefcase-24"
     spanIconSign.appendChild(iconSign);
     btnSign.appendChild(spanIconSign);
 

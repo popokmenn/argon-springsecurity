@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import com.naufal.argon.Repository.BiodataRepository;
@@ -46,9 +48,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUserAndRole(UserDto userDto) {
+    public User saveUserAndRole(UserDto userDto, HttpServletRequest request) {
         Date currentDate = new Date();
         String createdBy = "Nopel Popokmen";
+
+        HttpSession session = request.getSession();
+        User userSession = (User) session.getAttribute("user");
+        if (userSession != null) {
+            createdBy = userSession.getBiodata().getFullname();
+        }
 
         User user = new User();
         Biodata bio = new Biodata();

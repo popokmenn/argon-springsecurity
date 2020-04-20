@@ -45,8 +45,8 @@ public class UserRestController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping(value = "/reg")
-    private User saveUser(@RequestBody UserDto user) {
-        return userService.saveUserAndRole(user);
+    private User saveUser(@RequestBody UserDto user, HttpServletRequest request) {
+        return userService.saveUserAndRole(user, request);
     }
 
     @PostMapping(value = "/login")
