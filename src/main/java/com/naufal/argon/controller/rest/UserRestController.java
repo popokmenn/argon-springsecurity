@@ -1,7 +1,13 @@
 package com.naufal.argon.controller.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -95,9 +101,32 @@ public class UserRestController {
         roleRepository.saveAll(roleList);
     }
 
+    @GetMapping("/get-by-role")
+    private List<User> getByRoleName(String roleName) {
+        return userRepository.findAllByUserRoleRoleName(roleName);
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
     @GetMapping
-    private List<UserDto> getAllUser() {
-        List<User> users = userRepository.findAll();
+    private Stream<UserDto> getAllUser(@RequestParam(required = false) String fullname,
+            @RequestParam(required = false) String username, @RequestParam(required = false) String role) {
+
+        if (username == null)
+            username = "";
+
+        if (fullname == null)
+            fullname = "";
+
+        if (role == null)
+            role = "";
+
+        List<User> users = userRepository
+                .findAllByUsernameIgnoreCaseContainingAndBiodataFullnameIgnoreCaseContainingAndUserRoleRoleNameIgnoreCaseContaining(
+                        username, fullname, role);
 
         List<UserDto> userDtos = new ArrayList<>();
         for (User u : users) {
@@ -123,17 +152,19 @@ public class UserRestController {
             userDtoObj.setZipCode(u.getBiodata().getZipCode());
             userDtoObj.setRoles(userRoles);
             userDtos.add(userDtoObj);
+
         }
 
-        return userDtos;
+        Stream<UserDto> newUserDto = userDtos.stream().filter(distinctByKey(UserDto::getId));
+        return newUserDto;
     }
 
     @GetMapping("get/{id}")
     private UserDto getById(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
-     
+
         List<BaseDto> roles = new ArrayList<>();
-        for(UserRole ur : user.getUserRole()) {
+        for (UserRole ur : user.getUserRole()) {
             Role getRole = roleRepository.findById(ur.getId().getRoleId()).get();
             BaseDto role = new BaseDto();
             role.setId(getRole.getId());
@@ -157,5 +188,4 @@ public class UserRestController {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

@@ -1,5 +1,11 @@
 var roleList = [];
 var idUserForDelete;
+
+const searchFullname = document.getElementById('search-fullname');
+const searchUsername = document.getElementById('search-username');
+const searchRoles = document.getElementById('search-roles');
+const searchAccess = document.getElementById('search-accessprivilege');
+
 const inputUsername = document.getElementById('username');
 const inputPassword = document.getElementById('password');
 var pwInput = document.getElementById('pwDiv')
@@ -10,6 +16,38 @@ const inputHandler = function (e) {
         document.getElementById("btn-signup").disabled = false;
     } else {
         document.getElementById("btn-signup").disabled = true;
+    }
+}
+
+const buildURLQuery = obj =>
+    Object.entries(obj)
+        .map(pair => pair.map(encodeURIComponent).join('='))
+        .join('&');
+
+const searchHandler = function () {
+    var queryObj = {}
+    if (searchFullname.value.length > 0) {
+        queryObj.fullname = searchFullname.value
+
+    }
+
+    if (searchUsername.value.length > 0) {
+        queryObj.username = searchUsername.value
+
+    }
+
+    if (searchRoles.value.length > 0) {
+        queryObj.role = searchRoles.value
+
+    }
+
+    $("#table-user-body tr").remove();
+    console.log("?" + buildURLQuery(queryObj))
+    populateTable.getAllUsers("?" + buildURLQuery(queryObj))
+
+    if (searchUsername.value.length > 3 || searchUsername.value.length > 3 || searchFullname.value.length > 3) {
+
+
     }
 }
 
@@ -28,7 +66,7 @@ function deleteUser(idUser) {
 
 function reloadTabel() {
     $("#table-user-body tr").remove();
-    populateTable.getAllUsers();
+    populateTable.getAllUsers('');
 }
 
 function loadToForm(idUser) {
@@ -146,12 +184,14 @@ function generateRow(userObj) {
 
 //buar get data yang ditampilin di tabel
 var populateTable = {
-    getAllUsers: function () {
+    getAllUsers: function (searchQuery) {
         $.ajax({
-            url: '/user',
+            url: '/user' + searchQuery,
             method: 'get',
             contentType: 'application/json',
             success: function (res, status, xhr) {
+                console.log('asdad')
+                $("#table-user-body tr").remove();
                 for (const key in res) {
                     generateRow(res[key]);
                 }
@@ -233,10 +273,6 @@ $('#btn-signup').click(function () {
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     reloadTabel()
-    inputUsername.addEventListener('input', inputHandler);
-    inputUsername.addEventListener('propertychange', inputHandler);
-    inputPassword.addEventListener('input', inputHandler);
-    inputPassword.addEventListener('propertychange', inputHandler);
 
     //default dari select2 nya
     $('#selectRole').select2({
@@ -269,5 +305,18 @@ $(document).ready(function () {
         reloadTabel();
         $("#idUser").val(-99);
     })
+
+    inputUsername.addEventListener('input', inputHandler);
+    inputUsername.addEventListener('propertychange', inputHandler);
+    inputPassword.addEventListener('input', inputHandler);
+    inputPassword.addEventListener('propertychange', inputHandler);
+    searchAccess.addEventListener('input', searchHandler);
+    searchAccess.addEventListener('propertychange', searchHandler);
+    searchFullname.addEventListener('input', searchHandler);
+    searchFullname.addEventListener('propertychange', searchHandler);
+    searchRoles.addEventListener('input', searchHandler);
+    searchRoles.addEventListener('propertychange', searchHandler);
+    searchUsername.addEventListener('input', searchHandler);
+    searchUsername.addEventListener('propertychange', searchHandler);
 
 });
