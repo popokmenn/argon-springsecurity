@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/user")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserRestController {
 
     @Autowired
@@ -56,7 +58,7 @@ public class UserRestController {
     }
 
     @PostMapping(value = "/login")
-    private ResponseEntity<Boolean> validateUser(@RequestParam String username, @RequestParam String password,
+    private ResponseEntity<String> validateUser(@RequestParam String username, @RequestParam String password,
             HttpServletRequest req) {
         User user = userRepository.findByUsernameAndPassword(username, password);
 
@@ -67,9 +69,9 @@ public class UserRestController {
                 req.getSession().setAttribute("profilephoto", user.getBiodata().getProfilePhoto());
             }
 
-            return ResponseEntity.ok(Boolean.TRUE);
+            return new ResponseEntity<String>(HttpStatus.OK);
         } else
-            return ResponseEntity.ok(Boolean.FALSE);
+            return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping(value = "/role")

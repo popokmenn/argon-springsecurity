@@ -10,9 +10,9 @@ const inputUsername = document.getElementById('username');
 const inputPassword = document.getElementById('password');
 var pwInput = document.getElementById('pwDiv')
 
-//suatu fungsi yang dijalankan ketika inputan username dan password diketik
+//suatu fungsi yang dijalankan ketika inputan username dan password diketik > 4 && $('#password').val().length > 4
 const inputHandler = function (e) {
-    if ($('#username').val().length > 4 && $('#password').val().length > 4) { //jika input password dan username length nya lebih dari 4 maka, button sign up sudah bisa di klik (disable = false)
+    if ($('#username').val().length) { //jika input password dan username length nya lebih dari 4 maka, button sign up sudah bisa di klik (disable = false)
         document.getElementById("btn-signup").disabled = false;
     } else {
         document.getElementById("btn-signup").disabled = true;
@@ -190,7 +190,6 @@ var populateTable = {
             method: 'get',
             contentType: 'application/json',
             success: function (res, status, xhr) {
-                console.log('asdad')
                 $("#table-user-body tr").remove();
                 for (const key in res) {
                     generateRow(res[key]);

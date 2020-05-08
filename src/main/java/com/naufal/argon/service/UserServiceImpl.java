@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         Biodata bio = new Biodata();
 
-        if (userDto.getId() > -1) {
+        if (userDto.getId() > -1 && userDto.getId() != null) {
             User userById = userRepository.findById(userDto.getId()).get();
             user.setId(userDto.getId());
             user.setModifiedBy(createdBy);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
             bio.setCreatedBy(userById.getBiodata().getCreatedBy());
             bio.setCreatedOn(userById.getBiodata().getCreatedOn());
         } else {
-            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            user.setPassword(userDto.getPassword());
             bio.setCreatedBy(createdBy);
             bio.setCreatedOn(currentDate);
             user.setCreatedOn(currentDate);
